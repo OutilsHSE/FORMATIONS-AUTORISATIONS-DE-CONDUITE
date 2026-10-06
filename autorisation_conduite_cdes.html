@@ -1090,7 +1090,7 @@ const AC_AGENCES = (window.REG && REG.listes && REG.listes.agences && REG.listes
    retrouve automatiquement la bonne agence à sa réouverture. */
 const AC_AGENCES_ALIAS = { "Agence Est":"Agence IDF", "Agence CDES Île de France":"Agence IDF",
                            "Agence Ouest":"Agence BPL" };
-let AC_AGENCE = AC_AGENCES[0].agence;
+let AC_AGENCE = '';   // 06/10/2026 : l'agence est choisie explicitement (obligatoire), indépendamment du signataire
 
 const AC_HABILITATIONS = [
   /* ── CACES R482 — Engins de chantier (TP) ── */
@@ -1289,14 +1289,14 @@ function acBuildForm(){
     sec(1, "Agence & responsable", "Qui validera l'autorisation", `
       <div class="ib ac-full"><label>Agence de rattachement du chantier</label>
         <div class="ac-seg" id="ac_agence_seg">
-          ${AC_AGENCES.map((a, i) => `<button type="button"${i === 0 ? ' class="on"' : ''} onclick="acAgence(${i},this)">🏢 ${a.agence} — ${a.signataire.split(' - ')[0]}</button>`).join('')}
+          ${AC_AGENCES.map((a, i) => `<button type="button" onclick="acAgence(${i},this)">🏢 ${a.agence}</button>`).join('')}
         </div></div>
       <div class="ib"><label>Responsable signataire</label>
         <select id="ac_signataire" onchange="acSignataire()">${AC_SIGNATAIRES.map(s =>
-          `<option value="${s}"${s === ACFG.signataire ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
-      <div class="ib"><label>Email du responsable (pour l'envoi en signature)</label>
-        <input class="ac-in" type="email" id="ac_mail_resp" placeholder="prenom.nom@cdes.fr" value="${AC_SIGNATAIRE_MAILS[ACFG.signataire] || ''}" oninput="acMailHint();acDirty()">
-        <span class="ac-mailhint" id="ac_mailhint"></span></div>`) +
+          `<option value="${s}"${s === ACFG.signataire ? ' selected' : ''}>${s}</option>`).join('')}</select>
+        <span class="ac-mailhint" id="ac_mailhint"></span></div>
+      <div class="ib" id="ac_mail_wrap" style="display:none"><label>Email du responsable (pour l'envoi en signature)</label>
+        <input class="ac-in" type="email" id="ac_mail_resp" placeholder="prenom.nom@cdes.fr" value="${AC_SIGNATAIRE_MAILS[ACFG.signataire] || ''}" oninput="acMailHint();acDirty()"></div>`) +
 
     sec(2, "Informations du conducteur d'engin", "Le titulaire de l'autorisation", `
       <div class="ib ac-full">
@@ -1396,8 +1396,6 @@ function acBuildForm(){
   acAddLigne(ACFG.ligneDefaut ? { intitule: ACFG.ligneDefaut } : null);
   const lbl = _ac('ac-auto-lbl');
   if (lbl && ACFG.ligneDefaut) lbl.textContent = '« ' + ACFG.ligneDefaut + ' »';
-  const ai0 = AC_AGENCES.findIndex(a => a.signataire === ACFG.signataire);
-  if (ai0 > 0) acAgence(ai0, _ac('ac_agence_seg').children[ai0], true);
   acMailHint();
 }
 /* Présent / Absent : le cadre de signature ou le champ email, jamais les deux. */
@@ -1424,17 +1422,14 @@ function acEnvoiHl(){
   if (pm) pm.classList.toggle('envhl', AC_TIT_MODE === 'mail');
   if (pp) pp.classList.toggle('envhl', AC_TIT_MODE === 'place' && !!AC_SIG_CACHE.tit);
 }
-/* Choix de l'agence : le responsable signataire et son adresse suivent. */
+/* Choix de l'agence (obligatoire). Depuis le 06/10/2026 il ne change plus le
+   responsable signataire : les deux choix sont indépendants. */
 function acAgence(i, btn, silencieux){
   const seg = _ac('ac_agence_seg'), a = AC_AGENCES[i];
   if (seg && btn) [...seg.children].forEach(x => x.classList.toggle('on', x === btn));
   if (!a) return;
   AC_AGENCE = a.agence;
-  if (!silencieux) {
-    _ac('ac_signataire').value = a.signataire;
-    _ac('ac_mail_resp').value = a.mail;
-    acMailHint(); acDirty();
-  }
+  if (!silencieux) acDirty();
 }
 /* Au changement de responsable : l'adresse suit. Si le responsable choisi n'a
    pas d'adresse enregistrée, le champ est VIDÉ — pour ne jamais envoyer une
@@ -1446,18 +1441,19 @@ function acNameEdit(){ AC_NAME_MANUAL = true; const h = _ac('ac_namehint');
 function acSignataire(){
   const s = _ac('ac_signataire').value;
   _ac('ac_mail_resp').value = AC_SIGNATAIRE_MAILS[s] || '';
-  const ai = AC_AGENCES.findIndex(a => a.signataire === s), seg = _ac('ac_agence_seg');
-  if (seg) [...seg.children].forEach((x, i) => x.classList.toggle('on', i === ai));
-  if (ai >= 0) AC_AGENCE = AC_AGENCES[ai].agence;
   acMailHint();
   acDirty();
 }
+/* L'adresse enregistrée n'est jamais affichée : le champ n'apparaît que si le
+   responsable choisi n'en a pas (ou si elle a été saisie à la main). */
 function acMailHint(){
   const h = _ac('ac_mailhint'); if (!h) return;
-  const s = _ac('ac_signataire').value, v = _ac('ac_mail_resp').value.trim();
-  if (v && AC_SIGNATAIRE_MAILS[s] === v) { h.textContent = '✉️ Adresse enregistrée pour ce responsable'; h.className = 'ac-mailhint ok'; }
+  const s = _ac('ac_signataire').value, v = _ac('ac_mail_resp').value.trim(), w = _ac('ac_mail_wrap');
+  let cache = false;
+  if (v && AC_SIGNATAIRE_MAILS[s] === v) { h.textContent = '✉️ Adresse enregistrée pour ce responsable'; h.className = 'ac-mailhint ok'; cache = true; }
   else if (v) { h.textContent = '✏️ Adresse saisie manuellement'; h.className = 'ac-mailhint'; }
-  else { h.textContent = '⚠️ Aucune adresse enregistrée pour ce responsable — saisissez-la ici'; h.className = 'ac-mailhint todo'; }
+  else { h.textContent = '⚠️ Aucune adresse enregistrée pour ce responsable — saisissez-la ci-dessous'; h.className = 'ac-mailhint todo'; }
+  if (w) w.style.display = cache ? 'none' : '';
 }
 /* Interprète « 26/10/2026 », « 10/2026 », « 2026-10-26 ». Renvoie null sinon. */
 function acParseDate(t){
@@ -1569,6 +1565,7 @@ function acGenerate(silent){
   const pr = _ac('ac_pr').value.trim(), nm = _ac('ac_nm').value.trim();
   const lignes = acLignes();
   if (!silent) {
+    if (!AC_AGENCE) { acToast('🏢 Choisissez l\'agence de rattachement du chantier'); _ac('ac_agence_seg').scrollIntoView({ behavior:'smooth', block:'center' }); return false; }
     if (!pr || !nm) { acToast('👤 Renseignez le prénom et le nom du titulaire'); return false; }
     if (!lignes.length) { acToast('📋 Ajoutez au moins une autorisation'); return false; }
     if (AC_APT === 'non') acToast("⚠️ Aptitude médicale « Non » — l'autorisation ne peut pas être délivrée en l'état");
