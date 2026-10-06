@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mode opératoire — Déploiement des outils HSE numériques CDES</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0D2B5E;--navy2:#164a8a;--green:#1E8A6E;--green2:#27a882;--tl:#a8ddd0;--tp:#e4f5f0;
+ --rd:#C0392B;--rdl:#fdecea;--gn:#1B8A3A;--gnl:#d4edda;--yw:#F5C800;--ywl:#fffbe0;
+ --tx:#0a1a2e;--txm:#3a5a7a;--br:#a8c8e0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--tx);background:#eef2f7;line-height:1.6}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#123f7d 45%,var(--green) 100%);
+ padding:40px 40px 34px;position:relative;overflow:hidden;box-shadow:0 8px 34px rgba(13,43,94,.35)}
+.hero::after{content:'';position:absolute;top:-120px;right:-90px;width:420px;height:420px;border-radius:50%;
+ background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%)}
+.hero-in{max-width:1000px;margin:auto;display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;position:relative;z-index:2}
+.logo{width:92px;height:92px;background:white;border-radius:14px;padding:8px;box-shadow:0 6px 22px rgba(0,0,0,.25)}
+.logo img{width:100%;height:100%;object-fit:contain}
+.hero .over{font-family:'Exo 2',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:1.6px;
+ text-transform:uppercase;color:rgba(255,255,255,.85)}
+.hero h1{font-family:'Exo 2',sans-serif;font-size:33px;font-weight:900;color:white;letter-spacing:.5px;margin-top:5px;line-height:1.2}
+.hero .sub{color:rgba(255,255,255,.9);font-size:14px;margin-top:9px;font-weight:500}
+.hero .meta{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.hero .meta span{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:white;
+ font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px}
+
+/* PROGRESS */
+.pbar{position:sticky;top:0;z-index:50;background:#071d3a;padding:10px 0;box-shadow:0 2px 14px rgba(0,0,0,.2)}
+.pbar-in{max-width:1000px;margin:auto;padding:0 20px;display:flex;align-items:center;gap:14px}
+.pbar-lbl{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;color:var(--tl);
+ text-transform:uppercase;letter-spacing:.9px;white-space:nowrap}
+.pbar-tr{flex:1;height:8px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden}
+.pbar-fl{height:100%;width:0;background:var(--green2);border-radius:4px;transition:width .4s,background .4s}
+.pbar-pc{font-family:'Exo 2',sans-serif;font-size:12px;font-weight:800;color:var(--yw);min-width:62px;text-align:right}
+
+.wrap{max-width:1000px;margin:0 auto;padding:30px 20px 60px}
+
+/* SOMMAIRE */
+.toc{background:white;border-radius:14px;padding:22px 26px;margin-bottom:26px;
+ border:1px solid rgba(168,200,224,.6);box-shadow:0 3px 16px rgba(13,43,94,.07)}
+.toc h2{font-family:'Exo 2',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;
+ color:var(--navy);margin-bottom:14px}
+.toc ol{list-style:none;counter-reset:t;display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+.toc li{counter-increment:t;font-size:13.5px}
+.toc a{color:var(--txm);text-decoration:none;display:flex;gap:9px;align-items:baseline;
+ padding:5px 8px;border-radius:7px;transition:background .16s,color .16s}
+.toc a:hover{background:var(--tp);color:var(--navy)}
+.toc a::before{content:counter(t);font-family:'Exo 2',sans-serif;font-weight:800;color:var(--green);
+ font-size:12px;min-width:16px}
+
+/* SECTIONS */
+section{background:white;border-radius:14px;margin-bottom:22px;overflow:hidden;
+ border:1px solid rgba(168,200,224,.55);box-shadow:0 3px 16px rgba(13,43,94,.06)}
+.sh{padding:16px 26px;display:flex;align-items:center;gap:14px;
+ background:linear-gradient(100deg,var(--navy),var(--navy2));color:white}
+.sh.g{background:linear-gradient(100deg,var(--navy),var(--green))}
+.sh.r{background:linear-gradient(100deg,#7d1d14,var(--rd))}
+.sh .n{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);
+ border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;
+ font-family:'Exo 2',sans-serif;font-weight:900;font-size:16px;flex-shrink:0}
+.sh h2{font-family:'Exo 2',sans-serif;font-size:16.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+.sh .dur{margin-left:auto;font-size:11px;font-weight:600;background:rgba(255,255,255,.16);
+ padding:4px 12px;border-radius:20px;white-space:nowrap;border:1px solid rgba(255,255,255,.25)}
+.sb{padding:24px 26px}
+.sb>p{margin-bottom:13px;font-size:14px}
+.sb h3{font-family:'Exo 2',sans-serif;font-size:13.5px;font-weight:800;color:var(--navy);
+ text-transform:uppercase;letter-spacing:.6px;margin:22px 0 11px;display:flex;align-items:center;gap:9px}
+.sb h3:first-child{margin-top:0}
+.sb h3::after{content:'';flex:1;height:1.5px;background:linear-gradient(90deg,var(--tl),transparent);border-radius:2px}
+
+/* ÉTAPES À COCHER */
+.step{display:flex;gap:13px;padding:13px 15px;border-radius:11px;margin-bottom:8px;
+ background:#f6fafd;border:1.5px solid rgba(168,200,224,.5);transition:all .2s;align-items:flex-start}
+.step:hover{border-color:var(--tl);background:var(--tp)}
+.step.done{background:var(--gnl);border-color:rgba(27,138,58,.45)}
+.step input{display:none}
+.step .box{width:24px;height:24px;border-radius:7px;border:2px solid rgba(13,43,94,.3);background:white;
+ flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;
+ color:transparent;cursor:pointer;transition:all .2s;margin-top:1px}
+.step.done .box{background:var(--gn);border-color:var(--gn);color:white}
+.step .tx{flex:1;font-size:14px}
+.step .tx b{color:var(--navy)}
+.step .tx .note{display:block;font-size:12.5px;color:var(--txm);margin-top:4px}
+
+/* CODE */
+code{background:#eaf0f7;color:#0b3a6b;padding:2px 7px;border-radius:5px;
+ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12.5px;font-weight:600}
+pre{background:#0d2038;color:#d9e6f2;border-radius:10px;padding:15px 18px;overflow-x:auto;
+ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65;
+ margin:11px 0;border-left:4px solid var(--green)}
+pre .c{color:#8fb3cc;font-style:italic}
+pre .s{color:#9ae6b4}
+pre .k{color:#f6c177}
+
+/* ENCADRÉS */
+.cal{border-radius:11px;padding:14px 17px;margin:14px 0;font-size:13.5px;border-left:5px solid;display:flex;gap:12px}
+.cal .i{font-size:20px;flex-shrink:0;line-height:1.3}
+.cal.info{background:#eef5fc;border-color:var(--navy2)}
+.cal.warn{background:var(--ywl);border-color:var(--yw)}
+.cal.ko{background:var(--rdl);border-color:var(--rd)}
+.cal.ok{background:var(--gnl);border-color:var(--gn)}
+.cal b{color:var(--navy)}
+
+/* TABLEAUX */
+table{width:100%;border-collapse:collapse;margin:13px 0;font-size:13px}
+th{background:linear-gradient(100deg,var(--navy),var(--navy2));color:white;padding:10px 13px;
+ text-align:left;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
+ text-transform:uppercase;letter-spacing:.5px}
+th:first-child{border-radius:9px 0 0 0}th:last-child{border-radius:0 9px 0 0}
+td{padding:10px 13px;border-bottom:1px solid rgba(168,200,224,.45);vertical-align:top}
+tr:nth-child(even) td{background:#f7fafd}
+td code{font-size:11.5px}
+
+/* PILLS */
+.pill{display:inline-block;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;
+ letter-spacing:.5px;padding:3px 10px;border-radius:20px;vertical-align:middle}
+.p-g{background:var(--gnl);color:var(--gn);border:1px solid rgba(27,138,58,.35)}
+.p-r{background:var(--rdl);color:var(--rd);border:1px solid rgba(192,57,43,.35)}
+.p-y{background:var(--ywl);color:#9c6b00;border:1px solid rgba(245,200,0,.5)}
+.p-b{background:#e8f0fb;color:var(--navy2);border:1px solid rgba(22,74,138,.3)}
+
+/* CARTES FICHIERS */
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px;margin:14px 0}
+.file{background:linear-gradient(160deg,#f2f9fc,#fbfefe);border:1.5px solid rgba(168,200,224,.6);
+ border-radius:12px;padding:15px 16px}
+.file .fn{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:var(--navy);
+ word-break:break-all;margin-bottom:6px}
+.file .fd{font-size:12.5px;color:var(--txm);line-height:1.5}
+.file .ft{display:inline-block;font-size:9.5px;font-weight:800;font-family:'Exo 2',sans-serif;
+ letter-spacing:.5px;padding:2px 9px;border-radius:20px;margin-bottom:8px;
+ background:var(--navy);color:white}
+.file .ft.gs{background:var(--green)}
+
+/* SCHÉMA */
+.flow{display:flex;align-items:stretch;gap:12px;margin:16px 0;flex-wrap:wrap}
+.fbox{flex:1;min-width:190px;background:linear-gradient(160deg,#f0f7fc,#fafdff);
+ border:2px solid var(--br);border-radius:12px;padding:15px;text-align:center}
+.fbox .fi{font-size:28px;display:block;margin-bottom:7px}
+.fbox .ftt{font-family:'Exo 2',sans-serif;font-weight:800;font-size:12.5px;color:var(--navy);
+ text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.fbox .fdd{font-size:12px;color:var(--txm);line-height:1.45}
+.farrow{display:flex;align-items:center;font-size:22px;color:var(--green);font-weight:900}
+
+footer{background:linear-gradient(135deg,var(--navy),var(--green));color:rgba(255,255,255,.75);
+ text-align:center;padding:22px;font-size:12px;font-family:'Exo 2',sans-serif;letter-spacing:.4px}
+footer b{color:var(--tl)}
+
+@media(max-width:720px){
+ .toc ol{grid-template-columns:1fr}.hero{padding:26px 18px}.hero h1{font-size:24px}
+ .hero-in{grid-template-columns:1fr}.logo{width:70px;height:70px}.farrow{display:none}
+}
+@media print{
+ body{background:white}
+ .pbar,.toc{display:none}
+ section{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+ .hero,.sh,th,footer{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ pre{white-space:pre-wrap}
+ @page{size:A4;margin:12mm}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="logo"><img src="data:image/jpeg;base64,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" alt="CDES"></div>
+    <div>
+      <div class="over">Service HSE — CDES · Curages Dragages et Systèmes</div>
+      <h1>Mode opératoire de déploiement</h1>
+      <div class="sub">Fiches de formation &amp; accompagnement au poste de travail · Autorisations de conduite · Registre centralisé</div>
+      <div class="meta"><span>⏱️ ~45 min la première fois</span><span>🔁 5 min pour les fiches suivantes</span><span>📄 Version 3</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="pbar">
+  <div class="pbar-in">
+    <span class="pbar-lbl">Avancement du déploiement</span>
+    <div class="pbar-tr"><div class="pbar-fl" id="pf"></div></div>
+    <span class="pbar-pc" id="pp">0 / 0</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="toc">
+  <h2>📑 Sommaire</h2>
+  <ol>
+    <li><a href="#s0">Ce que vous allez déployer</a></li>
+    <li><a href="#s1">Prérequis</a></li>
+    <li><a href="#s2">Phase 1 — Créer le registre (Google Sheet + Apps Script)</a></li>
+    <li><a href="#s3">Phase 2 — Connecter les applications</a></li>
+    <li><a href="#s4">Phase 3 — Publier les applications en ligne</a></li>
+    <li><a href="#s5">Phase 4 — Recette : les 10 tests à passer</a></li>
+    <li><a href="#s6">Phase 5 — Mise en service (formateur &amp; responsable)</a></li>
+    <li><a href="#s7">Phase 6 — Créer une nouvelle fiche</a></li>
+    <li><a href="#s8">Maintenance &amp; mises à jour</a></li>
+    <li><a href="#s9">Dépannage</a></li>
+    <li><a href="#s10">Annexes — structure du registre &amp; mails</a></li>
+  </ol>
+</div>
+
+<!-- ═══ 0 ═══ -->
+<section id="s0">
+  <div class="sh g"><span class="n">0</span><h2>Ce que vous allez déployer</h2></div>
+  <div class="sb">
+    <p>Le dispositif repose sur <b>trois briques</b>. Les applications tournent dans le navigateur du collaborateur ; aucune donnée n'est stockée sur son poste — tout remonte dans un Google Sheet qui vous appartient.</p>
+
+    <div class="flow">
+      <div class="fbox"><span class="fi">📱</span><div class="ftt">Les applications</div>
+        <div class="fdd">Fichiers HTML publiés en ligne. Le référent les ouvre sur PC, tablette ou téléphone.</div></div>
+      <div class="farrow">→</div>
+      <div class="fbox"><span class="fi">⚙️</span><div class="ftt">Le pont Apps Script</div>
+        <div class="fdd">Reçoit les enregistrements, écrit dans le Sheet, envoie les mails.</div></div>
+      <div class="farrow">→</div>
+      <div class="fbox"><span class="fi">📊</span><div class="ftt">Le registre Google Sheet</div>
+        <div class="fdd">3 onglets : Fiches, Autorisations, Journal. Votre tableau de bord.</div></div>
+    </div>
+
+    <h3>Les fichiers livrés</h3>
+    <div class="files">
+      <div class="file"><span class="ft">Application</span>
+        <div class="fn">fiche_faucardage_cdes.html</div>
+        <div class="fd">La fiche de formation au poste faucardage, en 5 pages, avec son onglet Autorisation de conduite intégré.</div></div>
+      <div class="file"><span class="ft">Application</span>
+        <div class="fn">autorisation_conduite_cdes.html</div>
+        <div class="fd">L'autorisation de conduite seule, pour délivrer un titre sans passer par une formation au poste.</div></div>
+      <div class="file"><span class="ft gs">Backend</span>
+        <div class="fn">apps_script_Code.gs</div>
+        <div class="fd">Le code à coller dans le Google Sheet. Un seul déploiement sert toutes les fiches, présentes et à venir.</div></div>
+    </div>
+
+    <div class="cal info"><span class="i">💡</span><div>Un <b>seul</b> registre et un <b>seul</b> déploiement Apps Script pour l'ensemble du dispositif. Les dix fiches à venir se brancheront sur la même URL — vous ne referez jamais la phase 1.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 1 ═══ -->
+<section id="s1">
+  <div class="sh"><span class="n">1</span><h2>Prérequis</h2><span class="dur">5 min</span></div>
+  <div class="sb">
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Un compte Google</b> pour héberger le Sheet et exécuter le script.
+      <span class="note">Compte professionnel de préférence : les quotas d'envoi de mails sont de 1 500/jour contre 100/jour sur un compte personnel.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Un compte GitHub</b> (gratuit) pour publier les applications.
+      <span class="note">C'est l'hébergement que vous utilisez déjà. Sans admin IT à solliciter.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Les trois fichiers livrés</b> enregistrés dans un dossier de votre poste.
+      <span class="note">Un éditeur de texte suffit pour les modifier : Bloc-notes, Notepad++ ou VS Code.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>L'adresse mail du service HSE</b> qui recevra les reports automatiques, et celles des responsables signataires.</span></label>
+
+    <div class="cal warn"><span class="i">⚠️</span><div>Vos droits d'administration sont restreints sur le tenant Microsoft 365 : c'est justement pourquoi ce dispositif s'appuie uniquement sur Google et GitHub, sans connecteur premium ni installation sur les postes.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 2 ═══ -->
+<section id="s2">
+  <div class="sh g"><span class="n">2</span><h2>Phase 1 — Créer le registre</h2><span class="dur">15 min · une seule fois</span></div>
+  <div class="sb">
+
+    <h3>2.1 — Le classeur</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Créez un Google Sheet vierge et nommez-le <code>Registre Fiches Formation CDES</code>.
+      <span class="note">Rangez-le dans un dossier Drive partagé avec votre suppléant : si vous êtes absent, quelqu'un doit pouvoir y accéder.</span></span></label>
+
+    <h3>2.2 — Coller le script</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Menu <b>Extensions → Apps Script</b>. Un nouvel onglet s'ouvre sur un fichier <code>Code.gs</code> contenant une fonction vide.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Supprimez tout le contenu</b> et collez l'intégralité de <code>apps_script_Code.gs</code>.</span></label>
+
+    <h3>2.3 — Renseigner l'adresse des reports</h3>
+    <p>Tout en haut du script, remplacez la valeur vide par votre adresse :</p>
+<pre><span class="c">// 📧 Destinataire des reports HSE</span>
+<span class="k">var</span> REPORT_EMAIL = <span class="s">'prenom.nom@cdes.eu'</span>;</pre>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Adresse renseignée, puis <b>Ctrl + S</b> pour enregistrer.
+      <span class="note">Plusieurs destinataires possibles, séparés par des virgules : <code>'a@cdes.fr, b@cdes.fr'</code>. Laisser <code>''</code> désactive tous les mails mais conserve le registre.</span></span></label>
+
+    <h3>2.4 — Déployer en application web</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Bouton <b>Déployer → Nouveau déploiement</b>, puis cliquez sur la roue crantée et choisissez le type <b>Application Web</b>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Réglez <b>Exécuter en tant que</b> sur <span class="pill p-b">Moi</span> et <b>Qui a accès</b> sur <span class="pill p-b">Tout le monde</span>.
+      <span class="note">Ce réglage est indispensable : il permet aux référents chantier et aux responsables d'enregistrer et de signer sans avoir de compte Google. Le script s'exécute sous votre identité, donc personne d'autre n'accède au Sheet directement.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Cliquez sur <b>Déployer</b>, puis <b>Autoriser l'accès</b> et choisissez votre compte.</span></label>
+
+    <div class="cal warn"><span class="i">🔐</span><div>Google affiche « <b>Google n'a pas validé cette application</b> ». C'est normal pour un script maison. Cliquez sur <b>Paramètres avancés</b> puis sur <b>Accéder à Registre Fiches Formation CDES (non sécurisé)</b>, et acceptez les autorisations demandées — dont l'envoi de mails en votre nom.</div></div>
+
+    <h3>2.5 — Récupérer l'URL</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Copiez <b>l'URL de l'application web</b> affichée à la fin du déploiement. Elle se termine par <code>/exec</code>.
+      <span class="note">Collez-la immédiatement quelque part de sûr : c'est la clé de voûte de tout le dispositif. Vous la retrouverez toujours dans <b>Déployer → Gérer les déploiements</b>.</span></span></label>
+<pre>https://script.google.com/macros/s/AKfycb<span class="c">…longue chaîne…</span>/exec</pre>
+
+    <div class="cal ok"><span class="i">✅</span><div>Les onglets <b>Fiches</b>, <b>Autorisations</b> et <b>Journal</b> se créeront tout seuls au premier enregistrement. Ne les créez pas à la main.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 3 ═══ -->
+<section id="s3">
+  <div class="sh"><span class="n">3</span><h2>Phase 2 — Connecter les applications</h2><span class="dur">5 min</span></div>
+  <div class="sb">
+    <p>Il s'agit d'écrire l'URL du script dans chaque fichier HTML. <b>À faire dans les deux fichiers</b>, avec la même URL.</p>
+
+    <h3>3.1 — L'URL du registre</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Ouvrez <code>fiche_faucardage_cdes.html</code> dans un éditeur de texte, cherchez <code>apiUrl</code> (<b>Ctrl + F</b>) et collez l'URL entre les guillemets.</span></label>
+<pre><span class="c">// ⚙️ URL du déploiement Google Apps Script</span>
+apiUrl: <span class="s">"https://script.google.com/macros/s/AKfycb…/exec"</span>,</pre>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Faites <b>exactement la même chose</b> dans <code>autorisation_conduite_cdes.html</code>.
+      <span class="note">Même URL : le registre est commun. C'est l'identifiant <code>ficheId</code> interne qui distingue les activités.</span></span></label>
+
+    <h3>3.2 — Le carnet d'adresses des signataires <span class="pill p-y">Recommandé</span></h3>
+
+    <div class="cal info"><span class="i">💬</span><div><b>D'abord, à quoi servent les <code>//</code> ?</b> En informatique, deux barres obliques en début de ligne signifient « ceci est une note pour l'humain, l'application doit l'ignorer ». On appelle cela <i>mettre en commentaire</i>. Dans le fichier livré, les deux lignes d'exemple sont volontairement mises en commentaire pour que l'application démarre sans adresse. <b>Retirer les <code>//</code>, c'est activer la ligne.</b></div></div>
+
+    <p>Cherchez <code>AC_SIGNATAIRE_MAILS</code> dans le fichier (<b>Ctrl + F</b>). Vous trouverez ceci — les deux lignes grisées commencent par <code>//</code>, elles ne servent donc à rien pour l'instant :</p>
+<pre><span class="c">// ❌ ÉTAT LIVRÉ — les lignes d'exemple sont inactives</span>
+<span class="k">const</span> AC_SIGNATAIRE_MAILS = {
+  <span class="c">// "Prénom NOM - Directeur Général": "a.momeux@cdes.fr",</span>
+  <span class="c">// "Prénom NOM - Responsable HSE": "prenom.nom@cdes.eu",</span>
+};</pre>
+
+    <p>Remplacez ce bloc par vos vraies adresses, <b>sans les <code>//</code></b>, une ligne par personne :</p>
+<pre><span class="c">// ✅ ÉTAT ATTENDU — les lignes sont actives</span>
+<span class="k">const</span> AC_SIGNATAIRE_MAILS = {
+  <span class="s">"Prénom NOM - Directeur Général"</span>: <span class="s">"a.momeux@cdes.fr"</span>,
+  <span class="s">"Prénom NOM - Directeur Général"</span>: <span class="s">"m.audebert@cdes.fr"</span>,
+  <span class="s">"Prénom NOM - Responsable d'Agence"</span>: <span class="s">"t.petit@cdes.fr"</span>,
+  <span class="s">"Prénom NOM - Responsable Exploitation"</span>: <span class="s">"m.bomble@cdes.fr"</span>,
+  <span class="s">"Prénom NOM - Responsable HSE"</span>: <span class="s">"prenom.nom@cdes.eu"</span>,
+};</pre>
+
+    <p>La règle de lecture est simple : <b>à gauche le nom tel qu'il apparaît dans le menu déroulant</b>, deux points, <b>à droite son adresse</b>, et une virgule en fin de ligne. Vous pouvez en mettre 3, 5 ou les 12 — seuls ceux que vous renseignez seront reconnus.</p>
+
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Carnet d'adresses complété dans <b>les deux fichiers</b>, sans les <code>//</code>.
+      <span class="note">Le nom à gauche doit être <b>strictement identique</b> à celui du menu déroulant, accents, tirets et espaces compris. Le plus sûr est de copier-coller le libellé depuis la liste des signataires du fichier plutôt que de le retaper.</span></span></label>
+
+    <h3>3.3 — Comment le formulaire utilise ce carnet</h3>
+    <p>Dans la page Autorisation, deux champs travaillent ensemble :</p>
+    <table>
+      <tr><th style="width:32%">Champ</th><th>Rôle</th></tr>
+      <tr><td><b>Responsable signataire</b><br><span class="pill p-b">Menu déroulant</span></td><td>Le nom <b>imprimé sur la carte</b>, dans le bloc « Pour le Responsable ». Toujours les 12 personnes de la liste CDES.</td></tr>
+      <tr><td><b>Email du responsable</b><br><span class="pill p-b">Champ libre</span></td><td>L'adresse qui <b>recevra le mail</b> de demande de signature. Se remplit toute seule si le responsable choisi figure dans le carnet — sinon vous la tapez à la main.</td></tr>
+    </table>
+    <p>Autrement dit : <b>oui, vous choisissez le destinataire à chaque autorisation</b>. Le carnet ne fait que vous éviter de retaper les adresses les plus fréquentes. Un message sous le champ vous indique en permanence où vous en êtes :</p>
+    <table>
+      <tr><th style="width:44%">Message affiché</th><th>Signification</th></tr>
+      <tr><td><span class="pill p-g">✉️ Adresse enregistrée pour ce responsable</span></td><td>Elle vient du carnet, rien à faire.</td></tr>
+      <tr><td><span class="pill p-b">✏️ Adresse saisie manuellement</span></td><td>Vous l'avez tapée ou modifiée pour cet envoi.</td></tr>
+      <tr><td><span class="pill p-y">⚠️ Aucune adresse enregistrée</span></td><td>Ce responsable n'est pas dans le carnet : saisissez son adresse.</td></tr>
+    </table>
+    <div class="cal ok"><span class="i">🛡️</span><div>Si vous changez de responsable en cours de saisie, le champ email est <b>vidé automatiquement</b> quand le nouveau n'a pas d'adresse au carnet. Impossible d'envoyer par inadvertance l'autorisation à la personne précédemment sélectionnée.</div></div>
+
+    <div class="cal info"><span class="i">💾</span><div>Enregistrez les fichiers en <b>UTF-8</b>. Sous Bloc-notes : <i>Fichier → Enregistrer sous → Encodage : UTF-8</i>. Sans quoi les accents s'afficheront en caractères bizarres.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 4 ═══ -->
+<section id="s4">
+  <div class="sh g"><span class="n">4</span><h2>Phase 3 — Publier les applications en ligne</h2><span class="dur">10 min</span></div>
+  <div class="sb">
+    <div class="cal ko"><span class="i">🔗</span><div><b>Cette étape n'est pas optionnelle.</b> Le lien de signature envoyé au responsable contient l'adresse de l'application. Tant que les fichiers ne sont qu'en local sur votre poste, ce lien ne mène nulle part et le circuit de signature ne peut pas fonctionner.</div></div>
+
+    <h3>4.1 — Le dépôt</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Sur GitHub, créez un dépôt <b>public</b> nommé par exemple <code>cdes-hse</code>.
+      <span class="note">GitHub Pages ne fonctionne en gratuit que sur les dépôts publics. Aucune donnée collaborateur ne s'y trouve : les fichiers ne contiennent que le formulaire vierge. Les données réelles vivent dans votre Sheet privé.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Add file → Upload files</b> : déposez les fichiers HTML modifiés, puis <b>Commit changes</b>.</span></label>
+
+    <h3>4.2 — Comment les noms de fichiers deviennent des adresses</h3>
+    <p>Le principe est direct : <b>chaque fichier déposé garde son nom et devient accessible à sa propre adresse</b>. Il n'y a rien à déclarer, rien à configurer — poser le fichier suffit.</p>
+    <table>
+      <tr><th style="width:44%">Fichier déposé dans le dépôt</th><th>Adresse publique correspondante</th></tr>
+      <tr><td><code>fiche_faucardage_cdes.html</code></td><td><code>…github.io/cdes-hse/fiche_faucardage_cdes.html</code></td></tr>
+      <tr><td><code>autorisation_conduite_cdes.html</code></td><td><code>…github.io/cdes-hse/autorisation_conduite_cdes.html</code></td></tr>
+      <tr><td><code>fiche_manitou_cdes.html</code></td><td><code>…github.io/cdes-hse/fiche_manitou_cdes.html</code></td></tr>
+    </table>
+
+    <div class="cal info"><span class="i">🏠</span><div><b>Le cas particulier de <code>index.html</code>.</b> Un seul nom a un statut spécial : <code>index.html</code>. C'est le fichier servi quand on ouvre l'adresse du dépôt <i>sans préciser de fichier</i>. Autrement dit, <code>…github.io/cdes-hse/</code> affiche automatiquement <code>index.html</code>. Il n'est pas obligatoire — sans lui, cette adresse renvoie une erreur 404, mais chaque fiche reste accessible à son adresse complète. <b>C'est simplement la page d'accueil de votre portail.</b></div></div>
+
+    <p>C'est pour cela que je vous livre un <code>index.html</code> : une page d'accueil aux couleurs CDES qui liste les fiches en ligne, celles à venir, l'autorisation de conduite et vos ressources (registre, Vigiminute, ce mode opératoire). Avec dix fiches à terme, <b>vous ne diffusez qu'une seule adresse aux équipes</b> au lieu d'onze.</p>
+
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Déposez aussi <code>index.html</code> dans le dépôt.
+      <span class="note">Le nom doit être exactement <code>index.html</code>, en minuscules. <code>Index.html</code> ou <code>accueil.html</code> ne joueront pas ce rôle.</span></span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Dans <code>index.html</code>, collez le lien de votre Google Sheet dans <code>REGISTRE_URL</code> (bloc de configuration en bas du fichier), et ajustez la liste <code>FICHES</code> au fur et à mesure.
+      <span class="note">Une ligne par activité. <code>statut:"actif"</code> rend la tuile cliquable, <code>statut:"avenir"</code> l'affiche grisée — utile pour montrer aux équipes ce qui arrive.</span></span></label>
+
+    <div class="cal warn"><span class="i">✏️</span><div><b>Règles de nommage à respecter</b> pour tous les fichiers : pas d'accents, pas d'espaces (utilisez des tirets ou des soulignés), et attention à la casse — sur GitHub Pages, <code>Fiche.html</code> et <code>fiche.html</code> sont deux fichiers différents. Le nom que vous donnez apparaîtra dans l'adresse : choisissez-le lisible, il sera cliqué par les référents.</div></div>
+
+    <h3>4.3 — Activer Pages</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Onglet <b>Settings → Pages</b>. Sous <i>Source</i>, choisissez <b>Deploy from a branch</b>, branche <code>main</code>, dossier <code>/ (root)</code>, puis <b>Save</b>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Patientez 1 à 2 minutes et rechargez la page : l'adresse publique s'affiche.</span></label>
+<pre>https://<span class="c">votre-compte</span>.github.io/cdes-hse/fiche_faucardage_cdes.html
+https://<span class="c">votre-compte</span>.github.io/cdes-hse/autorisation_conduite_cdes.html</pre>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Testez les deux adresses</b> dans votre navigateur, puis diffusez-les aux référents (favori, QR code, lien intranet).
+      <span class="note">Un QR code collé dans les fourgons évite de retaper l'adresse sur le terrain.</span></span></label>
+  </div>
+</section>
+
+<!-- ═══ 5 ═══ -->
+<section id="s5">
+  <div class="sh"><span class="n">5</span><h2>Phase 4 — Recette : les 10 tests à passer</h2><span class="dur">15 min</span></div>
+  <div class="sb">
+    <p>Faites cette recette <b>une fois</b>, avec un collaborateur fictif (par exemple « Test Recette »), avant d'ouvrir l'outil aux équipes. Supprimez ensuite les lignes de test dans le Sheet.</p>
+
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>1. Enregistrement</b> — ouvrez la fiche en ligne, saisissez un prénom et un nom, cliquez sur <b>💾 Enregistrer</b>. Le badge en haut doit passer à « Enregistré à HH:MM » et une ligne apparaître dans l'onglet <b>Fiches</b>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>2. Réouverture</b> — rechargez la page, retapez le prénom et le nom dans « Reprendre une fiche existante » et cliquez sur <b>Rechercher</b>. Tout doit revenir à l'identique.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>3. Anomalies</b> — laissez un EPI décoché et enregistrez. Vous devez recevoir un mail <span class="pill p-r">⚠️ Anomalies check-up</span>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>4. Levée d'anomalie</b> — cochez tous les EPI, enregistrez. Mail <span class="pill p-g">✅ Check-up complet</span>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>5. Journal</b> — vérifiez que chaque enregistrement a bien créé une ligne dans l'onglet <b>Journal</b>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>6. Autorisation</b> — onglet <b>📄 Autorisation</b>, vérifiez le pré-remplissage puis cliquez sur <b>Générer</b>. La carte doit s'afficher avec la bonne ligne d'autorisation.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>7. Onglet Autorisations</b> — une ligne doit être apparue dans l'onglet <b>Autorisations</b> du Sheet, avec la source, le statut et les options PE/TEL.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>8. Envoi en signature</b> — mettez <b>votre propre adresse</b> comme responsable et cliquez sur <b>📧 Envoyer pour signature</b>. Vous devez recevoir le mail avec le lien.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>9. Signature</b> — ouvrez le lien (idéalement depuis un téléphone), vérifiez qu'aucun champ n'est modifiable, signez et validez. Le statut passe à <span class="pill p-g">Signée</span> et un mail part vers le service HSE.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>10. PDF</b> — testez les trois exports : fiche seule, autorisation seule, fiche + autorisation. Vérifiez que l'autorisation sort bien en <b>A4 paysage sur une seule page</b>.
+      <span class="note">Dans la boîte d'impression : destination « Enregistrer au format PDF », et activez <b>Graphismes d'arrière-plan</b> (sous « Plus de paramètres ») pour conserver les aplats de couleur.</span></span></label>
+
+    <div class="cal ok"><span class="i">🎉</span><div>Les 10 tests passent ? Le dispositif est opérationnel. Supprimez les lignes de recette dans les onglets Fiches, Autorisations et Journal, et ouvrez l'outil aux référents.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 6 ═══ -->
+<section id="s6">
+  <div class="sh g"><span class="n">6</span><h2>Phase 5 — Mise en service</h2></div>
+  <div class="sb">
+
+    <h3>Mode opératoire — le référent chantier</h3>
+    <p>À transmettre aux référents. Tient en cinq lignes.</p>
+    <table>
+      <tr><th style="width:30px">#</th><th>Action</th><th style="width:34%">Point de vigilance</th></tr>
+      <tr><td>1</td><td>Ouvrir le lien de la fiche. Si la formation a déjà commencé, retaper prénom + nom dans <b>« Reprendre une fiche existante »</b>.</td><td>Toujours la même orthographe du nom, sinon une seconde fiche est créée.</td></tr>
+      <tr><td>2</td><td>Renseigner le collaborateur, le référent, les dates, puis le check-up HSE et les équipements sur le schéma.</td><td>Un équipement non coché déclenche un report au service HSE.</td></tr>
+      <tr><td>3</td><td>Dérouler les pages Sécurité et Savoir : présenter les consignes par thème, puis cliquer sur <b>Vu</b>, <b>Compris</b> ou <b>Maîtrisé</b>.</td><td>L'onglet Validation reste verrouillé tant que le Savoir-Faire n'est pas entamé.</td></tr>
+      <tr><td>4</td><td>Page Validation : commentaires et trois signatures au doigt ou à la souris.</td><td>Les 3 signatures font passer la fiche en <b>Terminée</b>.</td></tr>
+      <tr><td>5</td><td>Page Autorisation : générer, puis <b>Envoyer au responsable pour signature</b>.</td><td>L'enregistrement est automatique — inutile de cliquer sur Enregistrer à chaque champ.</td></tr>
+    </table>
+
+    <div class="cal info"><span class="i">📶</span><div><b>Sur un chantier sans réseau :</b> la fiche fonctionne normalement, seul l'enregistrement échoue (badge orange). Utilisez <b>📁 Export JSON</b> pour conserver une trace, et réenregistrez une fois le réseau revenu. Rien n'est perdu tant que l'onglet reste ouvert.</div></div>
+
+    <h3>Mode opératoire — le responsable signataire</h3>
+    <p>Rien à installer, rien à apprendre : il reçoit un mail et clique.</p>
+    <table>
+      <tr><th style="width:30px">#</th><th>Ce qu'il fait</th></tr>
+      <tr><td>1</td><td>Il reçoit le mail <b>« ✍️ Autorisation de conduite à signer — Nom Prénom »</b> et clique sur le lien.</td></tr>
+      <tr><td>2</td><td>L'autorisation s'affiche seule, en lecture seule — il ne peut rien modifier.</td></tr>
+      <tr><td>3</td><td>Il signe dans le cadre <b>« Pour le Responsable »</b> : au doigt sur téléphone ou tablette, à la souris ou au stylet sur PC. Ou il imprime la carte pour la signer à la main.</td></tr>
+      <tr><td>4</td><td>Il clique sur <b>✅ Valider et signer</b> — le bouton reste grisé tant qu'il n'a pas signé.</td></tr>
+      <tr><td>5</td><td>Il peut télécharger son exemplaire PDF. De votre côté, vous recevez le mail de confirmation et le statut passe à <span class="pill p-g">Signée</span>.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 7 ═══ -->
+<section id="s7">
+  <div class="sh"><span class="n">7</span><h2>Phase 6 — Créer une nouvelle fiche</h2><span class="dur">~5 min par activité</span></div>
+  <div class="sb">
+    <p>Pour les neuf activités restantes. <b>Ni le Sheet ni le script ne sont à retoucher</b> : le registre est commun et distingue les activités par leur <code>ficheId</code>.</p>
+
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Dupliquez <code>fiche_faucardage_cdes.html</code> en <code>fiche_&lt;activite&gt;_cdes.html</code>.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Ouvrez-le et modifiez <b>uniquement le bloc <code>CONFIG</code></b>, tout en haut du script. Le reste du fichier — le moteur — ne bouge jamais.</span></label>
+
+    <table>
+      <tr><th style="width:26%">Clé</th><th>À renseigner</th></tr>
+      <tr><td><code>ficheId</code></td><td>Identifiant unique, sans espace ni accent : <code>"pelle-amphibie"</code>. C'est lui qui sépare les activités dans le registre.</td></tr>
+      <tr><td><code>activite</code></td><td>Le grand titre du bandeau : <code>"PELLE AMPHIBIE"</code>.</td></tr>
+      <tr><td><code>sousTitre</code></td><td>La précision sous le titre : <code>"Conduite d'une pelle amphibie"</code>.</td></tr>
+      <tr><td><code>machine</code></td><td>Nom et description de l'engin, affichés en tête du volet Savoir.</td></tr>
+      <tr><td><code>epi</code></td><td>Les équipements. <code>side</code> (L/R) et <code>top</code> placent l'étiquette, <code>ax</code>/<code>ay</code> le point d'ancrage de la flèche sur le personnage — le tout en % du cadre.</td></tr>
+      <tr><td><code>savoirThemes</code></td><td>Les consignes regroupées par thème, chacune avec son <code>type</code> : <code>interdit</code>, <code>obligation</code>, <code>vigilance</code> ou <code>info</code>.</td></tr>
+      <tr><td><code>savoirFairePhases</code></td><td>Le parcours pratique, découpé en phases dans l'ordre réel de la formation.</td></tr>
+      <tr><td><code>autorisation</code></td><td><code>ligneDefaut</code> : garder la formulation type <b>« Conduite d'une pelle amphibie sur la base d'une formation au poste de travail »</b>. Plus <code>perimetre</code>, <code>poste</code>, <code>signataire</code>.</td></tr>
+      <tr><td><code>apiUrl</code></td><td><b>La même URL</b> que la fiche faucardage.</td></tr>
+    </table>
+
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Remplacez les photos si besoin — bandeau, engin, personnage EPI — en changeant les valeurs <code>src</code> ou <code>url</code> correspondantes.</span></label>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Déposez le nouveau fichier sur GitHub et vérifiez son adresse publique.</span></label>
+
+    <div class="cal info"><span class="i">🤝</span><div>Le plus simple reste de m'envoyer la fiche Word de la prochaine activité : je vous rends le fichier configuré, prêt à publier.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 8 ═══ -->
+<section id="s8">
+  <div class="sh g"><span class="n">8</span><h2>Maintenance &amp; mises à jour</h2></div>
+  <div class="sb">
+    <h3>Modifier le script Apps Script</h3>
+    <p>Après toute modification du code — changement d'adresse de report, ajustement d'un mail — la nouvelle version n'est <b>pas</b> active tant qu'elle n'est pas redéployée.</p>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      <b>Déployer → Gérer les déploiements → ✏️ (crayon) → Version : Nouvelle version → Déployer.</b>
+      <span class="note">L'URL reste identique : rien à changer dans les fichiers HTML. Ne créez <b>jamais</b> un « Nouveau déploiement », cela générerait une seconde URL et couperait les applications déjà publiées.</span></span></label>
+
+    <h3>Mettre à jour une application</h3>
+    <label class="step"><input type="checkbox"><span class="box">✓</span><span class="tx">
+      Sur GitHub, ouvrez le fichier, cliquez sur le crayon ou re-uploadez la nouvelle version, puis <b>Commit</b>. La mise en ligne prend une minute.
+      <span class="note">Pensez à re-renseigner <code>apiUrl</code> et les emails signataires dans toute nouvelle version que je vous livre — ce sont les deux seules valeurs à reporter.</span></span></label>
+
+    <h3>Sauvegardes &amp; volumétrie</h3>
+    <table>
+      <tr><th style="width:32%">Sujet</th><th>Bon à savoir</th></tr>
+      <tr><td>Historique</td><td>Google Sheets conserve l'historique complet des versions : <i>Fichier → Historique des versions</i>. Une suppression accidentelle se rattrape.</td></tr>
+      <tr><td>Sauvegarde froide</td><td>Une fois par trimestre, <i>Fichier → Télécharger → Microsoft Excel</i> et archivez le classeur sur le réseau.</td></tr>
+      <tr><td>Taille des fiches</td><td>Une fiche complète avec signatures pèse environ 30 ko, réparties sur 4 colonnes. La marge est de 180 ko : aucun risque de saturation.</td></tr>
+      <tr><td>Quota de mails</td><td>1 500 mails/jour en compte professionnel, 100 en compte personnel. Très au-delà de l'usage réel.</td></tr>
+      <tr><td>Purge</td><td>Ne supprimez pas les lignes de l'onglet <b>Fiches</b> : ce sont vos preuves de formation. Le <b>Journal</b>, lui, peut être archivé chaque année.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 9 ═══ -->
+<section id="s9">
+  <div class="sh r"><span class="n">9</span><h2>Dépannage</h2></div>
+  <div class="sb">
+    <table>
+      <tr><th style="width:30%">Symptôme</th><th>Cause probable et correctif</th></tr>
+      <tr><td><b>Badge orange</b> « Hors ligne (URL non configurée) »</td><td><code>apiUrl</code> est resté vide dans le fichier. Reprenez le point 3.1.</td></tr>
+      <tr><td><b>« Échec enregistrement »</b></td><td>Trois causes, dans l'ordre : l'URL ne se termine pas par <code>/exec</code> ; le déploiement n'est pas réglé sur <i>Qui a accès : Tout le monde</i> ; le script a été modifié sans être redéployé en nouvelle version.</td></tr>
+      <tr><td><b>« Aucune fiche trouvée »</b> alors qu'elle existe</td><td>L'orthographe du prénom ou du nom diffère de la saisie initiale. Vérifiez la colonne <code>cle</code> de l'onglet Fiches — c'est elle qui sert de clé de recherche (accents et majuscules sont ignorés, pas les fautes de frappe).</td></tr>
+      <tr><td><b>Aucun mail ne part</b></td><td><code>REPORT_EMAIL</code> est vide ; ou les autorisations n'ont pas été acceptées au déploiement. Ouvrez l'éditeur Apps Script, lancez une fois la fonction <code>doGet</code> à la main et acceptez les accès.</td></tr>
+      <tr><td><b>Le lien de signature ne s'ouvre pas</b></td><td>Les fichiers n'ont pas été publiés en ligne (phase 3), ou le lien a été généré depuis un fichier local. Régénérez-le depuis l'adresse GitHub Pages.</td></tr>
+      <tr><td><b>Le responsable voit une page vide</b></td><td>L'autorisation n'avait pas été enregistrée avant l'envoi. Rouvrez la fiche, cliquez sur Générer puis renvoyez le lien.</td></tr>
+      <tr><td><b>Le PDF sort en noir et blanc</b></td><td>Activez <b>Graphismes d'arrière-plan</b> dans « Plus de paramètres » de la boîte d'impression.</td></tr>
+      <tr><td><b>L'autorisation sort sur 2 pages</b></td><td>Les marges d'impression ont été forcées. Remettez-les sur <b>Par défaut</b> et l'échelle sur <b>100 %</b> : le format paysage est piloté par le document.</td></tr>
+      <tr><td><b>Accents remplacés par des symboles</b></td><td>Le fichier a été réenregistré dans un autre encodage. Réenregistrez-le en <b>UTF-8</b>.</td></tr>
+      <tr><td><b>Une fiche en double dans le registre</b></td><td>Deux orthographes du même nom. Reprenez la bonne ligne et supprimez l'autre — la fiche la plus complète est celle au plus fort pourcentage.</td></tr>
+    </table>
+    <div class="cal info"><span class="i">🔎</span><div>Pour diagnostiquer côté serveur : dans l'éditeur Apps Script, menu <b>Exécutions</b> — vous y voyez chaque appel reçu, avec les erreurs éventuelles.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 10 ═══ -->
+<section id="s10">
+  <div class="sh"><span class="n">10</span><h2>Annexes</h2></div>
+  <div class="sb">
+
+    <h3>Les trois onglets du registre</h3>
+    <table>
+      <tr><th style="width:20%">Onglet</th><th>Contenu</th></tr>
+      <tr><td><b>Fiches</b></td><td>Une ligne par fiche de formation : identifiant d'activité, clé, nom, prénom, statut (En cours / Terminée), progression %, date de mise à jour, anomalies en cours, et le contenu intégral au format JSON — signatures comprises. C'est la source de vérité pour la réouverture.</td></tr>
+      <tr><td><b>Autorisations</b></td><td>Une ligne par autorisation de conduite, qu'elle soit vierge ou issue d'une fiche : date, source, activité, titulaire, poste, aptitude médicale, restrictions, liste des autorisations, options PE/TEL, date de validité, périmètre, signataire, email, <b>statut</b> (En cours / Envoyée pour signature / Signée), date de signature et lien. Votre tableau de bord des titres en attente.</td></tr>
+      <tr><td><b>Journal</b></td><td>Une ligne par enregistrement : date et heure, activité, collaborateur, référent, avancement, statut, anomalies. Le fil chronologique complet, utile en cas de contrôle ou d'audit.</td></tr>
+    </table>
+
+    <h3>Les mails automatiques</h3>
+    <table>
+      <tr><th style="width:26%">Objet</th><th style="width:18%">Déclencheur</th><th>Destinataire</th></tr>
+      <tr><td><span class="pill p-r">⚠️</span> Anomalies check-up</td><td>Un point manquant apparaît (accueil sécurité, aptitude, EPI)</td><td>Service HSE (<code>REPORT_EMAIL</code>)</td></tr>
+      <tr><td><span class="pill p-g">✅</span> Check-up complet</td><td>Toutes les anomalies signalées sont levées</td><td>Service HSE</td></tr>
+      <tr><td><span class="pill p-b">🎓</span> Formation terminée</td><td>Les 3 signatures de la fiche sont tracées</td><td>Service HSE</td></tr>
+      <tr><td><span class="pill p-y">✍️</span> Autorisation à signer</td><td>Clic sur « Envoyer au responsable pour signature »</td><td>Le responsable signataire</td></tr>
+      <tr><td><span class="pill p-g">✅</span> Autorisation signée</td><td>Le responsable valide sa signature</td><td>Service HSE</td></tr>
+    </table>
+    <div class="cal info"><span class="i">🔕</span><div>Le mail d'anomalies ne part qu'une fois le check-up considéré comme renseigné — quand le référent quitte la page 1 ou enregistre manuellement — et uniquement si la liste a changé. Pas de spam pendant la saisie.</div></div>
+
+    <h3>Les trois exports PDF</h3>
+    <table>
+      <tr><th style="width:34%">Bouton</th><th style="width:26%">Contenu</th><th>Format</th></tr>
+      <tr><td>⬇️ Exporter la fiche en PDF <span class="note"></span></td><td>La fiche seule</td><td>A4 portrait</td></tr>
+      <tr><td>⬇️ Télécharger l'autorisation seule</td><td>L'autorisation seule</td><td>A4 paysage, 1 page</td></tr>
+      <tr><td>📚 Télécharger fiche + autorisation</td><td>Les deux à la suite</td><td>Portrait puis 1 page paysage</td></tr>
+    </table>
+
+    <h3>Mémo des valeurs à conserver</h3>
+    <table>
+      <tr><th style="width:34%">Élément</th><th>Où le retrouver</th></tr>
+      <tr><td>URL du script <code>/exec</code></td><td>Apps Script → Déployer → Gérer les déploiements</td></tr>
+      <tr><td>Adresse des applications</td><td>GitHub → Settings → Pages</td></tr>
+      <tr><td>Registre Google Sheet</td><td>Votre Drive — pensez au partage avec un suppléant</td></tr>
+      <tr><td>Adresse des reports</td><td><code>REPORT_EMAIL</code>, ligne 16 du script</td></tr>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<footer>Mode opératoire rédigé pour le service <b>HSE — CDES</b> · Chemin de l'usine, 77138 Luzancy · Dispositif « Fiches de formation au poste &amp; Autorisations de conduite » — version 3</footer>
+
+<script>
+const steps = document.querySelectorAll('.step');
+function refresh(){
+  let n = 0;
+  steps.forEach(s => { const c = s.querySelector('input');
+    s.classList.toggle('done', c.checked); if (c.checked) n++; });
+  const p = steps.length ? Math.round(n / steps.length * 100) : 0;
+  document.getElementById('pf').style.width = p + '%';
+  document.getElementById('pf').style.background = p < 40 ? '#C0392B' : p < 80 ? '#E8A020' : '#27a882';
+  document.getElementById('pp').textContent = n + ' / ' + steps.length;
+}
+steps.forEach(s => s.querySelector('input').addEventListener('change', refresh));
+refresh();
+document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior:'smooth', block:'start' });
+}));
+</script>
+</body>
+</html>
