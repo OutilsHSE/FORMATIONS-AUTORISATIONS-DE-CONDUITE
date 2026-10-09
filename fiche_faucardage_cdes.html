@@ -1121,6 +1121,10 @@ body.sign-mode .hero-text h1{font-size:32px}
           </div>
         </div>
         <div class="ib">
+          <label>🏢 Agence de rattachement</label>
+          <div class="iw"><span class="ic">🏢</span><select id="fiche_agence" onchange="ficheAgenceChangee();upd()"><option value="">— choisir —</option></select></div>
+        </div>
+        <div class="ib">
           <label>📅 Date début formation</label>
           <div class="iw"><span class="ic">📅</span><input type="date" id="d_debut" onchange="chkD();upd()"></div>
         </div>
@@ -2047,10 +2051,29 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');set
 /* ═══ SÉRIALISATION ═══ */
 function normKey(s){return (s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 function ficheKey(){const pr=normKey($('col_pr').value),nm=normKey($('col_nm').value);return pr&&nm?nm+'_'+pr:null;}
+/* ─── Lot Agence (09/10/2026) : agence de rattachement de la fiche ─── */
+function ficheAgenceOptions(){
+  const sel=$('fiche_agence'); if(!sel||sel.options.length>1)return;
+  const src=(window.REG&&REG.listes&&Array.isArray(REG.listes.agences)&&REG.listes.agences.length)?REG.listes.agences.map(a=>a.agence):['Agence IDF','Agence NA','Agence BPL'];
+  src.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+}
+function ficheAgenceChangee(){
+  /* le bloc « Autorisation de conduite » de la fiche prend la même agence s'il n'en a pas encore */
+  try{
+    const v=$('fiche_agence').value;
+    if(v&&typeof AC_AGENCES!=='undefined'&&typeof acAgence==='function'&&!AC_AGENCE){
+      const i=AC_AGENCES.findIndex(a=>a.agence===v), seg=document.getElementById('ac_agence_seg');
+      if(i>=0&&seg&&seg.children[i])acAgence(i,seg.children[i],true);
+    }
+  }catch(e){}
+  if(typeof acDirty==='function')try{acDirty();}catch(e){}
+}
+document.addEventListener('DOMContentLoaded',ficheAgenceOptions);
 function collectData(){
   return {
     meta:{ficheId:CONFIG.ficheId,version:CONFIG.version,titre:CONFIG.sousTitre,savedAt:new Date().toISOString()},
     infos:{col_pr:$('col_pr').value,col_nm:$('col_nm').value,ref_pr:$('ref_pr').value,ref_nm:$('ref_nm').value,d_debut:$('d_debut').value,d_fin:$('d_fin').value},
+    agence:($('fiche_agence')||{}).value||'',   // lot Agence (09/10/2026)
     hse:{h1:$('h1').checked,h2:$('h2').checked},
     epi:CONFIG.epi.map((_,i)=>$('e'+i).checked),
     cmt_epi:$('cmt_epi').value,
@@ -2069,6 +2092,7 @@ function applyData(d){
     const set=(id,v)=>{const el=$(id);if(el&&v!==undefined&&v!==null)el.value=v;};
     set('col_pr',d.infos?.col_pr);set('col_nm',d.infos?.col_nm);set('ref_pr',d.infos?.ref_pr);set('ref_nm',d.infos?.ref_nm);
     set('d_debut',d.infos?.d_debut);set('d_fin',d.infos?.d_fin);
+    if(d.agence!==undefined){ficheAgenceOptions();set('fiche_agence',d.agence);}
     ['h1','h2'].forEach(id=>{if(d.hse&&id in d.hse){$(id).checked=!!d.hse[id];tl(id);}});
     (d.epi||[]).forEach((v,i)=>{if($('e'+i))$('e'+i).checked=!!v;});
     set('cmt_epi',d.cmt_epi);
@@ -2114,6 +2138,7 @@ async function saveRemote(manual){
     statut:sigsOk?'Terminée':'En cours',progression:prog,
     anomalies:toutesAnomalies(),checkupDone:false,
     dateDebut:$('d_debut').value,dateFin:$('d_fin').value,
+    agence:($('fiche_agence')||{}).value||'',
     data:collectData(),
     pdf:(typeof AC_PDF_JOINT!=='undefined'&&AC_PDF_JOINT)?AC_PDF_JOINT.b64:undefined,
     filename:(typeof AC_PDF_JOINT!=='undefined'&&AC_PDF_JOINT)?AC_PDF_JOINT.name:undefined};
